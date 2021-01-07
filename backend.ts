@@ -1,7 +1,11 @@
 import * as express from 'express';
 import { join } from 'path';
+// serve API
+import { api } from './api'
 
 export const app = express();
+
+app.use('/api', api)
 
 const distFolder = join(
   process.cwd(),
