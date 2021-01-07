@@ -5,5 +5,17 @@
       class="navbar-brand d-flex align-items-center"
       ><strong>Welcome to the (work)shop!</strong></a
     >
+    <a
+      *ngIf="isLoggedIn$ | async"
+      routerLink="favorites"
+      class="btn btn-secondary my-2"
+      >my favorite products</a
+    >
+    <a
+      *ngIf="!(isLoggedIn$ | async)"
+      routerLink="login"
+      class="btn btn-secondary my-2"
+      >login</a
+    >
   </div>
 </div>

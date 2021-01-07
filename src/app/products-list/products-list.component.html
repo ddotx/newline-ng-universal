@@ -1,1 +1,11 @@
-<p>products-list works!</p>
+<h1 class="mb-3">All products</h1>
+<div class="row">
+  <app-product-details
+    *ngFor="let product of products$ | async"
+    [product]="product"
+    [isFavorite]="
+      (userFavorites$ | async)?.includes(product.id)
+    "
+    class="col-md-4"
+  ></app-product-details>
+</div>

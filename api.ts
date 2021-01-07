@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
-// import * as cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser'; // * Cookie Encryption
 
 import { ObjectId, MongoClient } from 'mongodb'; // * connect db
 import * as crypto from 'crypto';
@@ -17,7 +17,7 @@ api.use(
   })
 );
 api.use(bodyParser.json());
-// api.use(cookieParser());
+api.use(cookieParser());
 
 /**
  * Connecting to DB
@@ -84,86 +84,99 @@ api.get('/products/:id', async (req, res) => {
   }
 });
 
-// const key = fs.readFileSync(
-//   join(process.cwd(), 'privkey.pem'),
-//   'utf8'
-// );
+/**
+ * Cookie Encryption
+ * Generate a private key that will use to encrypt and decrypt cookies
+ * `openssl genrsa -out ./privkey.pem 2048`
+ */
+const key = fs.readFileSync(
+  join(process.cwd(), 'privkey.pem'),
+  'utf8'
+);
 
-// function encrypt(toEncrypt: string): string {
-//   const buffer = Buffer.from(toEncrypt);
-//   const encrypted = crypto.privateEncrypt(key, buffer);
-//   return encrypted.toString('base64');
-// }
+function encrypt(toEncrypt: string): string {
+  const buffer = Buffer.from(toEncrypt);
+  const encrypted = crypto.privateEncrypt(key, buffer);
+  return encrypted.toString('base64');
+}
 
-// function decrypt(toDecrypt: string): string {
-//   const buffer = Buffer.from(toDecrypt, 'base64');
-//   const decrypted = crypto.publicDecrypt(key, buffer);
-//   return decrypted.toString('utf8');
-// }
+function decrypt(toDecrypt: string): string {
+  const buffer = Buffer.from(toDecrypt, 'base64');
+  const decrypted = crypto.publicDecrypt(key, buffer);
+  return decrypted.toString('utf8');
+}
 
-// const hash = crypto.createHash('sha512');
-// api.post('/login', async (req, res) => {
-//   const email = req.body.email;
-//   const password = hash
-//     .update(req.body.password)
-//     .digest('hex');
-//   const foundUsers = await retrieveFromDb(
-//     'users',
-//     { password: 0 },
-//     { email: email, password: password }
-//   );
+/**
+ * User Authentication
+ */
+const hash = crypto.createHash('sha512');
 
-//   if (foundUsers.length == 0) {
-//     res.sendStatus(401);
-//   } else {
-//     const user = foundUsers[0];
-//     res.cookie('loggedIn', encrypt(`${user.id}`), {
-//       maxAge: 600 * 1000,
-//       httpOnly: true,
-//     });
+api.post('/login', async (req, res) => {
+  const email = req.body.email;
+  const password = hash // TODO: Use salt on production
+    .update(req.body.password)
+    .digest('hex');
+  const foundUsers = await retrieveFromDb(
+    'users',
+    { password: 0 },
+    { email: email, password: password }
+  );
 
-//     delete user.id;
-//     res.send(user);
-//   }
-// });
+  if (foundUsers.length == 0) {
+    res.sendStatus(401);
+  } else {
+    const user = foundUsers[0];
+    res.cookie('loggedIn', encrypt(`${user.id}`), {
+      maxAge: 600 * 1000,
+      httpOnly: true,
+    });
 
-// api.get('/isLoggedIn', async (req, res) => {
-//   if (req.cookies.loggedIn) {
-//     const userId = decrypt(req.cookies.loggedIn);
-//     const foundUsers = await retrieveFromDb(
-//       'users',
-//       { _id: 0, password: 0 },
-//       { _id: ObjectId(userId) }
-//     );
+    delete user.id;
+    res.send(user);
+  }
+});
 
-//     const user = foundUsers[0];
-//     res.send(user);
-//   } else {
-//     res.sendStatus(401);
-//   }
-// });
+api.get('/isLoggedIn', async (req, res) => {
+  if (req.cookies.loggedIn) {
+    const userId = decrypt(req.cookies.loggedIn);
+    const foundUsers = await retrieveFromDb(
+      'users',
+      { _id: 0, password: 0 },
+      { _id: ObjectId(userId) }
+    );
 
-// api.post('/favorites/:id', async (req, res) => {
-//   const userId = decrypt(req.cookies.loggedIn);
+    const user = foundUsers[0];
+    res.send(user);
+  } else {
+    res.sendStatus(401);
+  }
+});
 
-//   const newFavorite = req.params.id;
+/**
+ * Favorite
+ */
 
-//   const user = await retrieveFromDb(
-//     'users',
-//     { _id: 0, password: 0 },
-//     { _id: ObjectId(userId) }
-//   );
-//   const currentFavorites = user[0].favorite;
+api.post('/favorites/:id', async (req, res) => {
+  const userId = decrypt(req.cookies.loggedIn);
 
-//   if (!currentFavorites.includes(newFavorite)) {
-//     currentFavorites.push(newFavorite);
-//     await (await dbClient)
-//       .collection('users')
-//       .updateOne(
-//         { _id: ObjectId(userId) },
-//         { $set: { favorite: currentFavorites } }
-//       );
-//     res.status(202);
-//   }
-//   res.send(user[0]);
-// });
+  const newFavorite = req.params.id;
+
+  const user = await retrieveFromDb(
+    'users',
+    { _id: 0, password: 0 },
+    { _id: ObjectId(userId) }
+  );
+  const currentFavorites = user[0].favorite;
+
+  if (!currentFavorites.includes(newFavorite)) {
+    currentFavorites.push(newFavorite);
+    await (await dbClient)
+      .collection('users')
+      .updateOne(
+        { _id: ObjectId(userId) },
+        { $set: { favorite: currentFavorites } }
+      );
+    res.status(202);
+  }
+  res.send(user[0]);
+});

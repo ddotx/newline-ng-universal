@@ -1,0 +1,10 @@
+<h1 class="mb-3">Your favorite</h1>
+<div class="row">
+  <app-product-details
+    *ngFor="let product of favorite$ | async"
+    [product]="product"
+    [isFavorite]="true"
+    class="col-md-4"
+  >
+  </app-product-details>
+</div>
