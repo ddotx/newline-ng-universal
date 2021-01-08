@@ -22,7 +22,7 @@ app.get(
 app.use('/', express.static(distFolder));
 app.use('/**', express.static(distFolder));
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(
