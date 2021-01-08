@@ -1,5 +1,15 @@
 # NewlineNgUniversal
 
+### On HEROKU
+https://floating-eyrie-34648.herokuapp.com
+
+### On Lightsail
+http://13.229.238.17
+
+
+---
+
+
 ## User authentication
 
 ```bash
