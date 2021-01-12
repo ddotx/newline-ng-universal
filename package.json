@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node dist/backend/backend.js",
+    "start": "npm run serve:ssr",
+    "start:node-static": "node dist/backend/backend.js",
     "start:pm2": "pm2 start dist/backend/backend.js",
-    "build": "ng build --prod && npm run build:backend",
+    "build": "npm run build:ssr",
+    "build:node-static": "ng build --prod && npm run build:backend",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
