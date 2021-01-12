@@ -12,13 +12,17 @@ import {
   filter,
   take,
 } from 'rxjs/operators';
+import {environment} from "../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   // private API_URL = 'http://localhost/api';
-  private API_URL = '/api'
+  // private API_URL = '/api'
+  // TODO: Server-side
+  private API_URL = `${environment.apiBasePath}/api`
+
 
   private currentUser$: Subject<User> = new BehaviorSubject(null);
   private redirectUrl: string = '/'; // ? => AuthGuard uses to redirected after success
