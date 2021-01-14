@@ -1,8 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Product } from '../model/product.model';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Product} from '../model/product.model';
+import {Observable} from 'rxjs';
 import {environment} from "../environments/environment";
+
+/**
+ * Product Service
+ * -> Retrieves data via HTTP calls
+ */
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +19,12 @@ export class ProductsService {
   // Method 2 -> Use env const
   private API_URL = `${environment.apiBasePath}/api`
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+  ) {}
 
   public getProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(
+    return this.http.get<Product[]>(
       `${this.API_URL}/products`
     );
   }
@@ -25,7 +32,7 @@ export class ProductsService {
   public getProduct(
     productId: string
   ): Observable<Product> {
-    return this.httpClient.get<Product>(
+    return this.http.get<Product>(
       `${this.API_URL}/products/${productId}`
     );
   }

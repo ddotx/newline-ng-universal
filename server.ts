@@ -9,7 +9,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { existsSync } from 'fs';
 
 // api
-import { api } from './api'
+import { api, dbClient, decrypt } from './api'
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -20,6 +20,16 @@ export function app(): express.Express {
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', ngExpressEngine({
     bootstrap: AppServerModule,
+    // DI for dbClient Object
+    // Provide to Angular SSR
+    providers: [
+      {
+        provide: 'dbConnection', useValue: dbClient
+      },
+      {
+        provide: 'decrypt', useValue: decrypt
+      }
+    ]
   }));
 
   server.set('view engine', 'html');

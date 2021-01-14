@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from '../user.service';
+import {SeoService} from "../seo.service";
 
 @Component({
   selector: 'app-login',
@@ -14,9 +15,14 @@ export class LoginComponent implements OnInit {
     password: new FormControl('abc123'),
   });
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private seo: SeoService
+    ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.seo.setTitle('Login Page')
+  }
 
   public logIn() {
     const login = this.loginForm.get('email').value;

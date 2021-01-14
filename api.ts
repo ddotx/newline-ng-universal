@@ -8,6 +8,11 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import { join } from 'path';
 
+// * Using Angular Service
+import { MongoService } from './src/app/mongo.service'
+import {Product} from "./src/model/product.model";
+import {User} from "./src/model/user.model";
+
 export const api = express.Router(); // => import { api } in other file
 
 api.use(
@@ -24,7 +29,8 @@ api.use(cookieParser());
  */
 const dbUrl =
   'mongodb+srv://dbUser:SqyB0tGfGGBZrL6L@cluster0.is1ed.mongodb.net/cluster0';
-const dbClient = MongoClient.connect(dbUrl, {
+
+export const dbClient = MongoClient.connect(dbUrl, {
   useUnifiedTopology: true,
 }).then((connection) => connection.db('cluster0'));
 
@@ -35,7 +41,7 @@ dbClient.then(() => {
 /**
  * Helper Function
  */
-async function retrieveFromDb(
+/*async function retrieveFromDb(
   collectionName,
   project = {},
   query = {}
@@ -57,21 +63,36 @@ async function retrieveFromDb(
         resolve(objects);
       });
   });
-}
+}*/
+// * Use Angular Mongo Service
+const mongoService = new MongoService(dbClient)
 
 /**
  * Retrieving products
  */
 api.get('/products', async (req, res) => {
-  console.log('GET products');
-  const products = await retrieveFromDb('products', {
+  console.log('GET products from API');
+
+  /*const products = await retrieveFromDb('products', {
+    description: 0, // ? no description
+  });*/
+  const products = await mongoService.retrieveFromDb<Product>(
+    'products',
+    {
     description: 0, // ? no description
   });
+
   res.send(products);
 });
 
 api.get('/products/:id', async (req, res) => {
-  const products = await retrieveFromDb(
+
+  /*const products = await retrieveFromDb(
+    'products',
+    {}, // ? with description
+    { _id: ObjectId(req.params.id) }
+  );*/
+  const products = await mongoService.retrieveFromDb<Product>(
     'products',
     {}, // ? with description
     { _id: ObjectId(req.params.id) }
@@ -100,7 +121,7 @@ function encrypt(toEncrypt: string): string {
   return encrypted.toString('base64');
 }
 
-function decrypt(toDecrypt: string): string {
+export function decrypt(toDecrypt: string): string {
   const buffer = Buffer.from(toDecrypt, 'base64');
   const decrypted = crypto.publicDecrypt(key, buffer);
   return decrypted.toString('utf8');
@@ -116,7 +137,13 @@ api.post('/login', async (req, res) => {
   const password = hash // TODO: Use salt on production
     .update(req.body.password)
     .digest('hex');
-  const foundUsers = await retrieveFromDb(
+
+  /*const foundUsers = await retrieveFromDb(
+    'users',
+    { password: 0 },
+    { email: email, password: password }
+  ); */
+  const foundUsers = await mongoService.retrieveFromDb<User>(
     'users',
     { password: 0 },
     { email: email, password: password }
@@ -139,7 +166,13 @@ api.post('/login', async (req, res) => {
 api.get('/isLoggedIn', async (req, res) => {
   if (req.cookies.loggedIn) {
     const userId = decrypt(req.cookies.loggedIn);
-    const foundUsers = await retrieveFromDb(
+
+    /*const foundUsers = await retrieveFromDb(
+      'users',
+      { _id: 0, password: 0 },
+      { _id: ObjectId(userId) }
+    );*/
+    const foundUsers = await mongoService.retrieveFromDb<User>(
       'users',
       { _id: 0, password: 0 },
       { _id: ObjectId(userId) }
@@ -161,11 +194,17 @@ api.post('/favorites/:id', async (req, res) => {
 
   const newFavorite = req.params.id;
 
-  const user = await retrieveFromDb(
+  /*const user = await retrieveFromDb(
+    'users',
+    { _id: 0, password: 0 },
+    { _id: ObjectId(userId) }
+  );*/
+  const user = await mongoService.retrieveFromDb<User>(
     'users',
     { _id: 0, password: 0 },
     { _id: ObjectId(userId) }
   );
+
   const currentFavorites = user[0].favorite;
 
   if (!currentFavorites.includes(newFavorite)) {

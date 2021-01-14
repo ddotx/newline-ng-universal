@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiBasePath: 'http://localhost:4200'
+  apiBasePath: 'http://localhost:4200',
+  terrainShopBasePath: 'http://localhost:8080'
 };
 
 /*

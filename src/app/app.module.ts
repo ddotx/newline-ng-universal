@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import {BrowserModule, BrowserTransferStateModule} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,6 +10,8 @@ import { FavoritesComponent } from './favorites/favorites.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ProductDetailsComponent } from './product-details/product-details.component'
+// * Add TransferState to HTTP calls
+import { TransferHttpCacheModule } from '@nguniversal/common'
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { ProductDetailsComponent } from './product-details/product-details.compo
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserTransferStateModule,
+    TransferHttpCacheModule
   ],
   providers: [],
   bootstrap: [AppComponent]

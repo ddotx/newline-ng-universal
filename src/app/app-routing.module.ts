@@ -5,6 +5,7 @@ import { FavoritesComponent } from './favorites/favorites.component';
 import { LoginComponent } from './login/login.component';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { ProductsListComponent } from './products-list/products-list.component';
+import {TerrainShopResolverService} from "./terrain-shop-resolver.service";
 
 const routes: Routes = [
   { path: '', redirectTo: 'products', pathMatch: 'full' },
@@ -18,6 +19,12 @@ const routes: Routes = [
     path: 'favorites',
     component: FavoritesComponent,
     canActivate: [AuthGuardService]
+  },
+  { path: 'terrain-shop',
+    loadChildren: () => import('./terrain-shop/terrain-shop.module').then(m => m.TerrainShopModule),
+    resolve: {
+      promotions: TerrainShopResolverService
+    }
   }
 ];
 

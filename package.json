@@ -36,6 +36,7 @@
     "mongodb": "^3.6.3",
     "rxjs": "~6.6.0",
     "saslprep": "^1.0.0",
+    "sitemap-generator": "^8.5.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
   },

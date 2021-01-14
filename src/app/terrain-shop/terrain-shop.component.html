@@ -1,0 +1,13 @@
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <h2 class="mb-3">Visit our terrain shop!</h2>
+    <ng-container *ngIf="openingHours$ | async as time">
+      <p>Opens at: {{ time.open }}</p>
+      <p>Closes at: {{ time.close }}</p>
+    </ng-container>
+    <h4 class="mb-3">Current promotions!</h4>
+    <p *ngFor="let promotion of promotions$ | async">
+      {{ promotion }}
+    </p>
+  </div>
+</div>

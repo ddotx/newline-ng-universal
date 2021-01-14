@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { mergeMap, map } from 'rxjs/operators';
 import { ProductsService } from '../products.service';
 import { UserService } from '../user.service';
+import {SeoService} from "../seo.service";
 
 @Component({
   selector: 'app-favorites',
@@ -14,7 +15,8 @@ export class FavoritesComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private productsService: ProductsService
+    private productsService: ProductsService,
+    private seo: SeoService
   ) {}
 
   ngOnInit(): void {
@@ -29,6 +31,7 @@ export class FavoritesComponent implements OnInit {
         );
       })
     );
+    this.seo.setTitle('Your favorite products')
   }
 
 }

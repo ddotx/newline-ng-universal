@@ -5,6 +5,7 @@ import { filter, mergeMap } from 'rxjs/operators';
 import { Product } from 'src/model/product.model';
 import { ProductsService } from '../products.service';
 import { UserService } from '../user.service';
+import {SeoService} from "../seo.service";
 
 @Component({
   selector: 'app-products-list',
@@ -19,7 +20,8 @@ export class ProductsListComponent implements OnInit {
   constructor(
     private productsService: ProductsService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private seo: SeoService
   ) {}
 
   ngOnInit(): void {
@@ -33,6 +35,10 @@ export class ProductsListComponent implements OnInit {
       .subscribe();
     this.products$ = this.productsService.getProducts();
     this.userFavorites$ = this.userService.getFavorites();
+
+    this.seo.setTitle('Product list')
+    this.seo.setDescription('List of all products available in the shop')
+    this.seo.setKeywords(['food', 'drink', 'grocery'])
   }
 
 }

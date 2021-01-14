@@ -6,7 +6,7 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
         <h4 class="mb-3">{{p.name}}</h4>
-        <small class="text-muted">{{p.price | currency}}</small>
+        <small class="text-muted">{{p.price | currency: userCurrency}}</small>
       </div>
       <p *ngIf="p.description" class="card=text">{{p.description}}</p>
       <div class="btn-group">
