@@ -1,13 +1,13 @@
 # NewlineNgUniversal
 
 ## Browser Flow
-| Step | Browser Flow | NG | SSR |
-|---|---|---|---|
-|1| Establish a connection with server and query the data | - | - |
-|2| Retrieve the data | Time to First Byte | TTFB |
-|3| Render HTML and apply CSS | - | FCP |
-|4| Bootstrap JS and Angular -> Render views | First Contentful Print | Other 1 |
-|5| Bind functions to HTML elements, execute other script | Other | Other 2 |
+| Step | Browser Flow                                          | NG                     | SSR     |
+| ---- | ----------------------------------------------------- | ---------------------- | ------- |
+| 1    | Establish a connection with server and query the data | -                      | -       |
+| 2    | Retrieve the data                                     | Time to First Byte     | TTFB    |
+| 3    | Render HTML and apply CSS                             | -                      | FCP     |
+| 4    | Bootstrap JS and Angular -> Render views              | First Contentful Print | Other 1 |
+| 5    | Bind functions to HTML elements, execute other script | Other                  | Other 2 |
 
 ### On HEROKU
 
@@ -17,15 +17,15 @@ https://newline-ng-node-static-ddotx.herokuapp.com
 #### Universal SSR
 https://newline-ng-universal-ddotx.herokuapp.com
 
-| Testing | Without Universal | Universal SSR | Improve
-|---|---|---|---
-| TTFB | 34 ms | 392 ms | :bangbang:
-| FCP | 1.6 s | 1 s | :white_check_mark:
-| Time Interactive | 2.1 s | 5.1 s | :bangbang:
-| SEO | ? | 
+| Testing          | Without Universal | Universal SSR | Improve            |
+| ---------------- | ----------------- | ------------- | ------------------ |
+| TTFB             | 34 ms             | 392 ms        | :bangbang:         |
+| FCP              | 1.6 s             | 1 s           | :white_check_mark: |
+| Time Interactive | 2.1 s             | 5.1 s         | :bangbang:         |
+| SEO              | ?                 |
 
 
-### On Lightsail
+### On Lightsail (gdevlive)
 http://13.229.238.17
 
 
