@@ -1,4 +1,4 @@
-import {BrowserModule, BrowserTransferStateModule} from '@angular/platform-browser';
+import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,6 +12,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProductDetailsComponent } from './product-details/product-details.component'
 // * Add TransferState to HTTP calls
 import { TransferHttpCacheModule } from '@nguniversal/common'
+
+import { CloudinaryModule, CloudinaryConfiguration } from '@cloudinary/angular-5.x';
+import { Cloudinary } from 'cloudinary-core';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,8 @@ import { TransferHttpCacheModule } from '@nguniversal/common'
     HttpClientModule,
     ReactiveFormsModule,
     BrowserTransferStateModule,
-    TransferHttpCacheModule
+    TransferHttpCacheModule,
+    CloudinaryModule.forRoot({ Cloudinary }, { cloud_name: 'dmz3q20en' } as CloudinaryConfiguration)
   ],
   providers: [],
   bootstrap: [AppComponent]
